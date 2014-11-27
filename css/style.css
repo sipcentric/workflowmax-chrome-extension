@@ -1,0 +1,98 @@
+body {
+  min-width: 250px;
+  height: 350px;
+  color: #22313F;
+  padding: 0px 10px;
+  font-family: "Open Sans", sans-serif; }
+  body p, body li {
+    font-size: 1.2em; }
+
+#views .view {
+  display: none; }
+#views #greeting-view #greeting {
+  margin-bottom: 30px; }
+#views #greeting-view button {
+  position: absolute;
+  width: 230px;
+  bottom: 34px;
+  right: 10px;
+  font-size: 1.2em; }
+#views #sc-login-view #title {
+  margin-bottom: 30px; }
+#views #sc-login-view #sc-login-form {
+  margin-top: 30px; }
+  #views #sc-login-view #sc-login-form input {
+    margin: 10px 0px;
+    font-size: 1.2em; }
+  #views #sc-login-view #sc-login-form button {
+    width: calc(100% - 20px);
+    font-size: 1.2em;
+    position: absolute;
+    right: 10px;
+    bottom: 34px; }
+#views #sc-endpoint-view ul#sc-endpoint-select {
+  list-style: none;
+  padding: 0px; }
+  #views #sc-endpoint-view ul#sc-endpoint-select li {
+    cursor: pointer;
+    color: #4183c4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 230px;
+    font-weight: 400; }
+    #views #sc-endpoint-view ul#sc-endpoint-select li:hover {
+      font-weight: 700; }
+#views #wfm-login-view #title {
+  margin-bottom: 30px; }
+#views #wfm-login-view #wfm-login-form {
+  margin-top: 30px; }
+  #views #wfm-login-view #wfm-login-form input {
+    margin: 10px 0px;
+    font-size: 1.2em; }
+  #views #wfm-login-view #wfm-login-form button {
+    width: calc(100% - 20px);
+    font-size: 1.2em;
+    position: absolute;
+    right: 10px;
+    bottom: 34px; }
+#views #main-view #title {
+  margin-bottom: 30px; }
+#views #main-view button {
+  position: absolute;
+  bottom: 10px; }
+  #views #main-view button#logout {
+    left: 10px; }
+  #views #main-view button#reconnect {
+    right: 10px; }
+#views #main-view #wfm-credentials-alert {
+  margin-top: 30px; }
+#views #main-view #status-indicators > div {
+  margin: 10px 0px; }
+#views #main-view #status-indicators .service {
+  width: 100%;
+  display: inline;
+  font-size: 20px; }
+#views #main-view #status-indicators .status {
+  height: 20px;
+  width: 20px;
+  border-radius: 30px;
+  display: inline-block;
+  float: right;
+  margin: 4px 0px; }
+  #views #main-view #status-indicators .status.default {
+    background-color: #BBB; }
+  #views #main-view #status-indicators .status.good {
+    background-color: #67A033; }
+  #views #main-view #status-indicators .status.bad {
+    background-color: #C42121; }
+#views div.alert {
+  display: none;
+  padding: 7px;
+  font-size: 1em; }
+#views .italic {
+  font-style: italic; }
+#views .bold {
+  font-weight: 700; }
+
+/*# sourceMappingURL=style.css.map */

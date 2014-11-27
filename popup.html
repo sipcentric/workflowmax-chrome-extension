@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css">
+    <link href="/css/open-sans.css" rel="stylesheet" media="screen" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" media="screen" type="text/css">
+  </head>
+
+  <body tabindex="1">
+
+    <div id="views">
+
+      <div id="greeting-view" class="view">
+        <h2 id="greeting">Hey!</h2>
+        <p>Thanks for downloading <span class="bold">WorkflowMax for Sipcentric</span></p>
+        <br>
+        <p>If you have any problems or questions, please email <span class="italic">support@sipcentric.com</span></p>
+        <button id="greeting-advance" type="button" class="btn btn-info">Let's Go!</button>
+      </div>
+
+      <div id="sc-login-view" class="view">
+        <h2 id="title">Sipcentric Login</h2>
+        <p>Enter your Sipcentric login details below.</p>
+
+        <div id="sc-login-form">
+          <input type="text"     id="sc-user-input" class="form-control" placeholder="Username">
+          <input type="password" id="sc-pass-input" class="form-control" placeholder="Password">
+
+          <div class="alert alert-danger" id="sc-login-alert" role="alert">Invalid login - Please try again</div>
+
+          <button class="btn btn-info" id="sc-login-submit" type="button">Login!</button>
+        </div>
+      </div> <!-- /sc-login-view -->
+
+
+      <div id="sc-endpoint-view" class="view">
+        <h2>Preferences</h2>
+        <p>Select your extension:</p>
+        <ul id="sc-endpoint-select"></ul>
+      </div> <!-- /sc-endpoint-view -->
+
+
+      <div id="wfm-login-view" class="view">
+        <h2 id="title">WorkflowMax</h4>
+        <p>Enter your <a href="http://www.workflowmax.com/api/authentication">WorkflowMax API and account keys</a> below.</p>
+
+        <div id="wfm-login-form">
+          <input type="text" id="wfm-api-key-input" class="form-control" placeholder="API Key">
+          <input type="text" id="wfm-acc-key-input" class="form-control" placeholder="Account Key">
+
+          <div class="alert alert-danger" id="wfm-login-alert" role="alert">Invalid login - Please try again</div>
+
+          <button class="btn btn-info" id="wfm-login-submit" type="button">Submit!</button>
+        </div>
+      </div> <!-- /wfm-login-view -->
+
+
+      <div id="main-view" class="view">
+        <h2 id="title">Status</h2>
+
+        <div id="status-indicators">
+          <div id="sc-status">
+            <p class="service">Sipcentric</p>
+            <div class="status default" id="sc-status-indicator"></div>
+          </div>
+
+          <div id="wfm-status">
+            <p class="service">WorkflowMax</p>
+            <div class="status default" id="wfm-status-indicator"></div>
+          </div>
+        </div>
+
+        <div class="alert alert-warning" id="wfm-credentials-alert" role="alert"><span class="bold">Uh-oh!</span> Something went wrong when trying to reconnect.
+        <br><br>
+        If this error persists, please log out below and log back in.</div>
+
+        <button class="btn btn-default btn-xs" id="logout" type="button">Logout</button>
+        <button class="btn btn-info btn-xs" id="reconnect" type="button">Reconnect</button>
+      </div> <!-- /main-view -->
+
+
+    </div> <!-- /views -->
+
+  </body>
+
+  <script type="text/javascript" src="/components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="/components/bootstrap/dist/js/bootstrap.js"></script>
+
+  <script type="text/javascript" src="/js/main.js"></script>
+
+</html>

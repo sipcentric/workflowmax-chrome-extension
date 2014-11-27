@@ -1,0 +1,145 @@
+body {
+  min-width: 250px;
+  height: 350px;
+  color: #22313F;
+  padding: 0px 10px;
+  font-family: "Open Sans", sans-serif;
+  p, li {
+    font-size: 1.2em;
+  }
+}
+
+#views {
+  .view {
+    display: none;
+  }
+
+  #greeting-view {
+    #greeting {
+      margin-bottom: 30px;
+    }
+    button {
+      position: absolute;
+      width: 230px;
+      bottom: 34px;
+      right: 10px;
+      font-size: 1.2em;
+    }
+  }
+
+  #sc-login-view {
+    #title {
+      margin-bottom: 30px;
+    }
+    #sc-login-form {
+      margin-top: 30px;
+      input {
+        margin: 10px 0px;
+        font-size: 1.2em;
+      }
+      button {
+        width: calc(100% - 20px);
+        font-size: 1.2em;
+        position: absolute;
+        right: 10px;
+        bottom: 34px;
+      }
+    }
+  }
+
+  #sc-endpoint-view {
+    ul#sc-endpoint-select {
+      list-style: none;
+      padding: 0px;
+      li {
+        cursor: pointer;
+        color: #4183c4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 230px;
+        font-weight: 400;
+        &:hover {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  #wfm-login-view {
+    #title {
+      margin-bottom: 30px;
+    }
+    #wfm-login-form {
+      margin-top: 30px;
+      input {
+        margin: 10px 0px;
+        font-size: 1.2em;
+      }
+      button {
+        width: calc(100% - 20px);
+        font-size: 1.2em;
+        position: absolute;
+        right: 10px;
+        bottom: 34px;
+      }
+    }
+  }
+
+  #main-view {
+    #title {
+      margin-bottom: 30px; 
+    }
+    button {
+      position: absolute;
+      bottom: 10px;
+      &#logout {
+        left: 10px;
+      }
+      &#reconnect {
+        right: 10px;
+      }
+    }
+    #wfm-credentials-alert {
+      margin-top: 30px;
+    }
+    #status-indicators {
+      >div {
+        margin: 10px 0px;
+      }
+      .service {
+        width: 100%;
+        display: inline;
+        font-size: 20px;
+      }
+      .status {
+        height: 20px;
+        width: 20px;
+        border-radius: 30px;
+        display: inline-block;
+        float: right;
+        margin: 4px 0px;
+        &.default {
+          background-color: #BBB;
+        }
+        &.good {
+          background-color: #67A033;
+        }
+        &.bad {
+          background-color: #C42121;
+        }
+      }
+    }
+  }  
+  div.alert {
+    display: none;
+    padding: 7px;
+    font-size: 1em;
+  }
+  .italic {
+    font-style: italic;
+  }
+  .bold {
+    font-weight: 700;
+  }
+}
