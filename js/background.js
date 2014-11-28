@@ -46,7 +46,7 @@ function wfmRefreshClients() {
   }
 
   chrome.extension.sendRequest({msg: 'updateStatus'});
-  setTimeout(wfmRefreshClients, 300000);
+  setTimeout(wfmRefreshClients, 900000);
 }
 
 

@@ -1,10 +1,11 @@
 {
   "manifest_version": 2,
 
-  "name": "WorkflowMax for Sipcentric",
-  "short_name": "WFM for Sipcentric",  
-  "description": "WorkflowMax for Sipcentric Chrome extension",
-  "version": "0.1.1",
+  "name": "Sipcentric - WorkflowMax Connector",
+  "short_name": "Sipcentric - WorkflowMax Connector",  
+  "description": "Sipcentric - WorkflowMax Connector displays a Chrome notification when an caller's number is associated with a client in WorkflowMax, which can then be clicked to open that client's record.",
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  "version": "0.1.2",
 
   "icons": {
     "16": "/assets/wfm-16.png",
@@ -15,6 +16,7 @@
   "permissions": [
     "https://api.workflowmax.com/*",
     "https://pbx.sipcentric.com/*",
+    "https://ssl.google-analytics.com/*",
     "tabs",
     "notifications"
   ],
@@ -29,6 +31,7 @@
   },
 
   "browser_action": {
+    "default_icon": "/assets/wfm-32.png",
     "default_popup": "/popup.html"
   }
 }
