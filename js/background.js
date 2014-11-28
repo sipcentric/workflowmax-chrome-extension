@@ -230,33 +230,57 @@ function searchClients(query) {
 
 function createNotification(context) {
   var options = {
-    'type': 'basic',
-    'iconUrl': 'assets/wfm.png'
+    type: 'basic',
+    iconUrl: 'assets/wfm.png'
   }
 
   if (context.number == 'anonymous') {
     options.title = 'Call from anonymous';
-    options.message = 'Cannot be opened in WorkflowMax';
+    options.message = '';
+    options.contextMessage = 'Cannot be opened in WorkflowMax';
     options.isClickable = false;
   } else if (context.id) {
     options.title = 'Call from ' + context.number;
-    options.message = context.name;
-    options.contextMessage = 'Click to open in WorkflowMax';
+    options.message = '';
+    options.contextMessage = context.name;
     options.isClickable = true;
+    options.buttons = [{title: 'Open in WorkflowMax'}];
   } else {
     options.title = 'Call from ' + context.number;
-    options.message = 'No matches found in WorkflowMax';
+    options.message = '';
+    options.contextMessage = 'No matches found in WorkflowMax';
     options.isClickable = false;
   }
 
   chrome.notifications.create(notificationId='', options=options, function(id) {
     if (options.isClickable === true) {
       localStorage.setItem(id, JSON.stringify(context));
+      removeNotification(id);
     };
   });
 }
 
+
+function removeNotification(id) {
+  setTimeout(function() {
+    console.info('Notification removed from local storage: ' + id);
+    localStorage.removeItem(id);
+  }, 60000);
+}
+
+
 chrome.notifications.onClicked.addListener(function(id) {
+  if ( localStorage.getItem(id) ) {
+    var json = localStorage.getItem(id);
+    var client = JSON.parse(json);
+    var href = 'https://my.workflowmax.com/client/clientview.aspx?id=' + client.id;
+    localStorage.removeItem(id);
+    chrome.tabs.create({'url': href});
+  }
+});
+
+
+chrome.notifications.onButtonClicked.addListener(function(id) {
   if ( localStorage.getItem(id) ) {
     var json = localStorage.getItem(id);
     var client = JSON.parse(json);

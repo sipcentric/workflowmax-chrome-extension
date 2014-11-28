@@ -4,7 +4,7 @@
   "name": "WorkflowMax for Sipcentric",
   "short_name": "WFM for Sipcentric",  
   "description": "WorkflowMax for Sipcentric Chrome extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
 
   "icons": {
     "16": "/assets/wfm-16.png",
