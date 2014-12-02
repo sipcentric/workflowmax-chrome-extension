@@ -209,15 +209,25 @@ function startStream() {
 function searchClients(query) {
   for (var i in wfmClients) {
     var client = wfmClients[i];
-    var number = client.number.replace(/[^0-9]+/g, '');
-    
-    if (query == number) {
-      return client;
+    if (client.number) {
+      var number = client.number.replace(/[^0-9]+/g, '');
+
+      if (query == number) {
+        return client;
+      }
     }
+    
     for (var c in client.contacts) {
       var contact = client.contacts[c];
-      var cNumber = contact.number.replace(/[^0-9]+/g, '');
-      var cMobile = contact.mobile.replace(/[^0-9]+/g, '');
+      var cNumber;
+      var cMobile;
+      
+      if (contact.number) {
+        cNumber = contact.number.replace(/[^0-9]+/g, '');
+      }
+      if (contact.mobile) {
+        cMobile = contact.mobile.replace(/[^0-9]+/g, '');
+      }
       
       if (cNumber == query || cMobile == query) {
         return client;
