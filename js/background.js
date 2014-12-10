@@ -244,7 +244,7 @@ function createNotification(context) {
     iconUrl: 'assets/wfm.png'
   }
 
-  if (context.number == 'anonymous') {
+  if (!context.number || context.number == 'anonymous') {
     options.title = 'Call from anonymous';
     options.message = '';
     options.contextMessage = 'Cannot be opened in WorkflowMax';
