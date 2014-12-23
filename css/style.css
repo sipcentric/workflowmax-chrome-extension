@@ -56,8 +56,6 @@ body {
     position: absolute;
     right: 10px;
     bottom: 34px; }
-#views #main-view #title {
-  margin-bottom: 30px; }
 #views #main-view button {
   position: absolute;
   bottom: 10px; }
