@@ -1,5 +1,5 @@
 function scTestCredentials(scUser, scPass) {
-  var headers = { 
+  var headers = {
     Authorization: 'Basic ' + btoa(scUser + ':' + scPass)
   };
 
@@ -9,7 +9,7 @@ function scTestCredentials(scUser, scPass) {
     headers: headers,
     async: false,
     success: function(data) {
-      return data
+      return data;
     },
     error: function(err) {
       return err;
@@ -24,7 +24,7 @@ function scTestCredentials(scUser, scPass) {
 
 function scGetEndpoints(url) {
 
-  var headers = { 
+  var headers = {
     Authorization: 'Basic ' + localStorage.getItem('scAuth')
   };
 
@@ -38,7 +38,7 @@ function scGetEndpoints(url) {
     },
     async: false,
     success: function(data) {
-      return data
+      return data;
     },
     error: function(err) {
       return err;
@@ -81,6 +81,35 @@ function wfmListClients() {
   return response;
 }
 
+function wfmListSuppliers() {
+  var wfmBaseUrl = 'https://api.workflowmax.com/supplier.api';
+  var apiKey = localStorage.getItem('wfmApiKey');
+  var accKey = localStorage.getItem('wfmAccKey');
+
+  var url = wfmBaseUrl + '/list';
+  var reqData = {
+    apiKey: apiKey,
+    accountKey: accKey
+  };
+  var ajaxResponse = $.ajax({
+    type: 'GET',
+    url: url,
+    async: false,
+    data: reqData,
+    success: function(xmlDoc) {
+      var suppliers = $(xmlDoc).find('Suppliers');
+      return suppliers;
+    },
+    error: function(err) {
+      return err;
+    }
+  });
+
+  var status = ajaxResponse.status;
+  var response = status === 200 ? ajaxResponse.responseXML : false;
+  return response;
+}
+
 
 function wfmGetAllClients(xmlClients) {
 
@@ -98,7 +127,7 @@ function wfmGetAllClients(xmlClients) {
       number   : $(this).find('Phone').html(),
       website  : $(this).find('Website').html(),
       contacts : []
-    }
+    };
 
     $(this).find('Contacts').each(function() {
       var contact = {
@@ -115,6 +144,43 @@ function wfmGetAllClients(xmlClients) {
   });
 
   return clients;
+}
+
+
+function wfmGetAllSuppliers(xmlSuppliers) {
+
+  if ( localStorage.getItem('wfmSuppliers') ) {
+    return JSON.parse( localStorage.getItem('wfmSuppliers') );
+  }
+
+  var suppliers = [];
+
+  $(xmlSuppliers).find('Supplier').each(function() {
+
+    var supplier = {
+      id       : $(this).find('ID').html(),
+      type     : 'supplier',
+      name     : $(this).find('Name').html(),
+      number   : $(this).find('Phone').html(),
+      website  : $(this).find('Website').html(),
+      contacts : []
+    };
+
+    $(this).find('Contacts').each(function() {
+      var contact = {
+        id     : $(this).find('ID').html(),
+        name   : $(this).find('Name').html(),
+        email  : $(this).find('Email').html(),
+        number : $(this).find('Phone').html(),
+        mobile : $(this).find('Mobile').html()
+      };
+      supplier.contacts.push(contact);
+    });
+
+    suppliers.push(supplier);
+  });
+
+  return suppliers;
 }
 
 
@@ -142,11 +208,11 @@ function updateStatusIndicators() {
 
 
 function scSubmitLogin(scUser, scPass) {
-  
+
   var customer = scTestCredentials(scUser, scPass);
 
   if (customer) {
-    localStorage.setItem('scAuth', btoa(scUser + ':' + scPass) );    
+    localStorage.setItem('scAuth', btoa(scUser + ':' + scPass) );
     var endpoints = scGetEndpoints(customer.links.endpoints).items;
 
     if (endpoints) {
@@ -168,10 +234,13 @@ function wfmSubmitLogin(wfmApiKey, wfmAccKey) {
   localStorage.setItem('wfmApiKey', wfmApiKey);
   localStorage.setItem('wfmAccKey', wfmAccKey);
   var xmlClients = wfmListClients();
+  var xmlSuppliers = wfmListSuppliers();
 
   if (xmlClients) {
     var clients = wfmGetAllClients(xmlClients);
+    var suppliers = wfmGetAllSuppliers(xmlClients);
     localStorage.setItem('wfmClients', JSON.stringify(clients));
+    localStorage.setItem('wfmSuppliers', JSON.stringify(suppliers));
     chrome.extension.sendRequest({msg: 'startStream'});
     loadView();
     return true;
@@ -239,7 +308,7 @@ $('#wfm-login-form input').keyup(function(e) {
 
   if (e.which == 13) {
     e.preventDefault();
-      
+
     var valid = wfmSubmitLogin(wfmApiKey, wfmAccKey);
 
     if (!valid) {
@@ -286,7 +355,7 @@ $('#sc-login-form input').keypress(function(e) {
     e.preventDefault();
     var scUser = $('#sc-user-input').val();
     var scPass = $('#sc-pass-input').val();
-    
+
     var valid = scSubmitLogin(scUser, scPass);
 
     if (!valid) {

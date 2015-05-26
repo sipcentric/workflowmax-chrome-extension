@@ -2,10 +2,10 @@
   "manifest_version": 2,
 
   "name": "Sipcentric - WorkflowMax Connector",
-  "short_name": "Sipcentric - WorkflowMax Connector",  
+  "short_name": "Sipcentric - WorkflowMax Connector",
   "description": "This extension displays a Chrome notification when an caller's number is associated with a client in WorkflowMax",
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "icons": {
     "16": "/assets/wfm-16.png",

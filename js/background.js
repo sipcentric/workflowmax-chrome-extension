@@ -1,6 +1,7 @@
 // Global Variables
 var scEndpoint;
 var wfmClients;
+var wfmSuppliers;
 
 var scStatus;
 var wfmStatus;
@@ -28,6 +29,7 @@ function resetTimer() {
 function updateGlobals() {
   scEndpoint = localStorage.getItem('scUser');
   wfmClients = JSON.parse( localStorage.getItem('wfmClients') );
+  wfmSuppliers = JSON.parse( localStorage.getItem('wfmSuppliers') );
 }
 
 
@@ -47,6 +49,25 @@ function wfmRefreshClients() {
 
   chrome.extension.sendRequest({msg: 'updateStatus'});
   setTimeout(wfmRefreshClients, 900000);
+}
+
+
+function wfmRefreshSuppliers() {
+  var wfmPrevSuppliers = localStorage.getItem('wfmSuppliers');
+  localStorage.removeItem('wfmSuppliers');
+
+  var xmlSuppliers = wfmListSuppliers();
+  if (xmlSuppliers) {
+    var suppliers = wfmGetAllSuppliers(xmlSuppliers);
+    localStorage.setItem('wfmSuppliers', JSON.stringify(suppliers));
+    localStorage.setItem('wfmStatus', true);
+  } else {
+    localStorage.setItem('wfmSuppliers', wfmPrevSuppliers);
+    localStorage.setItem('wfmStatus', false);
+  }
+
+  chrome.extension.sendRequest({msg: 'updateStatus'});
+  setTimeout(wfmRefreshSuppliers, 900000);
 }
 
 
@@ -79,6 +100,35 @@ function wfmListClients() {
   return response;
 }
 
+function wfmListSuppliers() {
+  var wfmBaseUrl = 'https://api.workflowmax.com/supplier.api';
+  var apiKey = localStorage.getItem('wfmApiKey');
+  var accKey = localStorage.getItem('wfmAccKey');
+
+  var url = wfmBaseUrl + '/list';
+  var reqData = {
+    apiKey: apiKey,
+    accountKey: accKey
+  };
+  var ajaxResponse = $.ajax({
+    type: 'GET',
+    url: url,
+    async: false,
+    data: reqData,
+    success: function(xmlDoc) {
+      var suppliers = $(xmlDoc).find('Suppliers');
+      return suppliers;
+    },
+    error: function(err) {
+      return err;
+    }
+  });
+
+  var status = ajaxResponse.status;
+  var response = status === 200 ? ajaxResponse.responseXML : false;
+  return response;
+}
+
 
 function wfmGetAllClients(xmlClients) {
 
@@ -92,11 +142,12 @@ function wfmGetAllClients(xmlClients) {
 
     var client = {
       id       : $(this).find('ID').html(),
+      type     : 'client',
       name     : $(this).find('Name').html(),
       number   : $(this).find('Phone').html(),
       website  : $(this).find('Website').html(),
       contacts : []
-    }
+    };
 
     $(this).find('Contacts').each(function() {
       var contact = {
@@ -115,6 +166,42 @@ function wfmGetAllClients(xmlClients) {
   return clients;
 }
 
+function wfmGetAllSuppliers(xmlSuppliers) {
+
+  if ( localStorage.getItem('wfmSuppliers') ) {
+    return JSON.parse( localStorage.getItem('wfmSuppliers') );
+  }
+
+  var suppliers = [];
+
+  $(xmlSuppliers).find('Supplier').each(function() {
+
+    var supplier = {
+      id       : $(this).find('ID').html(),
+      type     : 'supplier',
+      name     : $(this).find('Name').html(),
+      number   : $(this).find('Phone').html(),
+      website  : $(this).find('Website').html(),
+      contacts : []
+    };
+
+    $(this).find('Contacts').each(function() {
+      var contact = {
+        id     : $(this).find('ID').html(),
+        name   : $(this).find('Name').html(),
+        email  : $(this).find('Email').html(),
+        number : $(this).find('Phone').html(),
+        mobile : $(this).find('Mobile').html()
+      };
+      supplier.contacts.push(contact);
+    });
+
+    suppliers.push(supplier);
+  });
+
+  return suppliers;
+}
+
 
 function startStream() {
 
@@ -130,6 +217,7 @@ function startStream() {
   resetTimer();
   updateGlobals();
   wfmRefreshClients();
+  wfmRefreshSuppliers();
 
   var authHeaders = {
     Authorization: 'Basic ' + localStorage.getItem('scAuth')
@@ -175,17 +263,18 @@ function startStream() {
       return;
     } else if (message.event != 'incomingcall') {
       return;
-    };
+    }
 
     var splitEndpoint = message.values.endpoint.split('/');
     var msgEndpoint = splitEndpoint[splitEndpoint.length-1];
 
     if (message.event == 'incomingcall' && msgEndpoint == scEndpoint) {
-      var match = searchClients(message.values.callerIdNumber);
+      var match = searchClients(message.values.callerIdNumber) || searchSuppliers(message.values.callerIdNumber);
       if (match) {
         var notificationData = {
           number : message.values.callerIdNumber,
           name   : match.name,
+          type   : match.type,
           id     : match.id
         }
         createNotification(notificationData);
@@ -216,21 +305,53 @@ function searchClients(query) {
         return client;
       }
     }
-    
+
     for (var c in client.contacts) {
       var contact = client.contacts[c];
       var cNumber;
       var cMobile;
-      
+
       if (contact.number) {
         cNumber = contact.number.replace(/[^0-9]+/g, '');
       }
       if (contact.mobile) {
         cMobile = contact.mobile.replace(/[^0-9]+/g, '');
       }
-      
+
       if (cNumber == query || cMobile == query) {
         return client;
+      }
+    }
+  }
+  return false;
+}
+
+
+function searchSuppliers(query) {
+  for (var i in wfmSuppliers) {
+    var supplier = wfmSuppliers[i];
+    if (supplier.number) {
+      var number = supplier.number.replace(/[^0-9]+/g, '');
+
+      if (query == number) {
+        return supplier;
+      }
+    }
+
+    for (var c in supplier.contacts) {
+      var contact = supplier.contacts[c];
+      var cNumber;
+      var cMobile;
+
+      if (contact.number) {
+        cNumber = contact.number.replace(/[^0-9]+/g, '');
+      }
+      if (contact.mobile) {
+        cMobile = contact.mobile.replace(/[^0-9]+/g, '');
+      }
+
+      if (cNumber == query || cMobile == query) {
+        return supplier;
       }
     }
   }
@@ -242,7 +363,7 @@ function createNotification(context) {
   var options = {
     type: 'basic',
     iconUrl: 'assets/wfm.png'
-  }
+  };
 
   if (!context.number || context.number == 'anonymous') {
     options.title = 'Call from anonymous';
@@ -266,7 +387,7 @@ function createNotification(context) {
     if (options.isClickable === true) {
       localStorage.setItem(id, JSON.stringify(context));
       removeNotification(id);
-    };
+    }
   });
 }
 
@@ -282,8 +403,14 @@ function removeNotification(id) {
 chrome.notifications.onClicked.addListener(function(id) {
   if ( localStorage.getItem(id) ) {
     var json = localStorage.getItem(id);
-    var client = JSON.parse(json);
-    var href = 'https://my.workflowmax.com/client/clientview.aspx?id=' + client.id;
+    var context = JSON.parse(json);
+    var baseUrl = 'https://my.workflowmax.com/';
+    var href;
+    if (context.type === 'client') {
+      href = baseUrl + 'client/clientview.aspx?id=' + context.id;
+    } else {
+      href = baseUrl + 'client/supplierview.aspx?id=' + context.id;
+    }
     localStorage.removeItem(id);
     chrome.tabs.create({'url': href});
   }
@@ -293,8 +420,14 @@ chrome.notifications.onClicked.addListener(function(id) {
 chrome.notifications.onButtonClicked.addListener(function(id) {
   if ( localStorage.getItem(id) ) {
     var json = localStorage.getItem(id);
-    var client = JSON.parse(json);
-    var href = 'https://my.workflowmax.com/client/clientview.aspx?id=' + client.id;
+    var context = JSON.parse(json);
+    var baseUrl = 'https://my.workflowmax.com/';
+    var href;
+    if (context.type === 'client') {
+      href = baseUrl + 'client/clientview.aspx?id=' + context.id;
+    } else {
+      href = baseUrl + 'client/supplierview.aspx?id' + context.id;
+    }
     localStorage.removeItem(id);
     chrome.tabs.create({'url': href});
   }
