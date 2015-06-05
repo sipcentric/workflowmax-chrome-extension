@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "jquery": "2.1.1",
-    "jquery-atmosphere": "2.2.5",
+    "jquery-atmosphere": "2.2.7",
     "bootstrap": "3.3.1"
   }
 }
